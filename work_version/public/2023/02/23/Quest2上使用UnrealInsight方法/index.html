@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>[crash]中断点异常 STATUS_BREAKPOINT(0x80000003) | Pigknight的知识库</title>
-  <meta name="keywords" content=" UE , Crash ">
-  <meta name="description" content="[crash]中断点异常 STATUS_BREAKPOINT(0x80000003) | Pigknight的知识库">
+  <title>[工具-性能]Quest2上使用UnrealInsight的方法 | Pigknight的知识库</title>
+  <meta name="keywords" content=" UE , 性能优化 , 工具 ">
+  <meta name="description" content="[工具-性能]Quest2上使用UnrealInsight的方法 | Pigknight的知识库">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="categories">
@@ -351,9 +351,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-中断点异常-STATUS-BREAKPOINT-0x80000003" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Quest2上使用UnrealInsight方法" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">[crash]中断点异常 STATUS_BREAKPOINT(0x80000003)</h1>
+        <h1 class="article-title">[工具-性能]Quest2上使用UnrealInsight的方法</h1>
     
     <div class="article-meta">
         
@@ -369,7 +369,9 @@
             
             <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal">Unreal</a> > 
             
-            <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal&lt;---&gt;Crash">Crash</a>
+            <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal&lt;---&gt;性能优化">性能优化</a> > 
+            
+            <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal&lt;---&gt;性能优化&lt;---&gt;VR">VR</a>
             
         </span>
         
@@ -379,14 +381,16 @@
             
             <a class="color3">UE</a>
             
-            <a class="color1">Crash</a>
+            <a class="color5">性能优化</a>
+            
+            <a class="color3">工具</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2023-02-23 10:24:35'>2023-02-23 09:41</time>
+            Created At : <time class="date" title='Updated At: 2023-02-23 21:49:08'>2023-02-23 20:42</time>
         
     </div>
     <div class="article-meta">
@@ -408,7 +412,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BB%93%E8%AE%BA%E4%B8%8E%E6%80%BB%E7%BB%93"><span class="toc-text">1. 结论与总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%94%99%E8%AF%AF%E8%A1%A8%E7%8E%B0%E4%B8%8E%E5%8E%9F%E5%9B%A0"><span class="toc-text">2. 错误表现与原因</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">详细步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -424,27 +428,115 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-结论与总结"><a href="#1-结论与总结" class="headerlink" title="1. 结论与总结"></a>1. 结论与总结</h3><ul>
-<li><p>消息系统中经常容易发生的循环中重入问题, 因此一定要加入额外的add与remove队列, 避免迭代器失效</p>
-</li>
-<li><p>当发现一种突发错误在默认中没有任何额外信息时, 可以查看下lldb的debuger</p>
-</li>
-</ul>
-<h3 id="2-错误表现与原因"><a href="#2-错误表现与原因" class="headerlink" title="2. 错误表现与原因"></a>2. 错误表现与原因</h3><p>游戏运行中, 会突然在如下代码行进入断点</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223095349.png"></p>
-<p>查看log与堆栈都是如下的0x80000003错误</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223101209.png"></p>
-<p>这个异常即中断指令异常，表示在系统未附加内核调试器时遇到断点或断言, 一般属于代码中发现错误主动中断</p>
+        <h3 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h3><ul>
+<li><p>在源代码引擎目录Engine&#x2F;Build&#x2F;Android&#x2F;UE4Game&#x2F;下获取ue4commandline.txt文件, 文件名大小写无关, 使用时去掉后缀template</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223214440.png"></p>
 <ul>
-<li>硬代码中断请求，如：asm int 3</li>
-<li>System.Diagnostics.Debugger.Break（C 35）</li>
-<li>DebugBreak（）（WinAPI）</li>
+<li>文件内部格式如下</li>
 </ul>
-<p>花了一点时间排除问题, 偶然中发现在Rider中Debugger Output(LLDB)中有明确的提示如下, 迭代器失效了</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223100411.png"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/lldb_status_breakpoint.png"></p>
-<p>结合代码, 即消息系统中, 一个消息触发, 生成一个Actor(也可以是删除), 这个Actor可能也去注册这个相同消息, 这样Listeners队列的迭代器即失效, 属于重入问题. </p>
-<p>也就两种方案, 加锁与额外内存(增加add与remove队列, 避免直接操作队列)</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223214330.png"></p>
+<p>具体参数参考官方文档,剪切如下</p>
+<blockquote>
+<ol>
+<li><p>Notes on each dir&#x2F;flag shown above:</p>
+</li>
+<li><ul>
+<li><p><strong><ProjectName></strong></p>
+</li>
+<li><ul>
+<li>Just the name of the Unreal project - this will match the entry in &#x2F;sdcard&#x2F;UE4Game&#x2F;<ProjectName></li>
+</ul>
+</li>
+<li><p><strong><UProjectName></strong></p>
+</li>
+<li><ul>
+<li>The UProjectName will match the output binary (dictated by the engine) so you can just use the APK name or find the .uproject file in your game’s directory.</li>
+</ul>
+</li>
+<li><p><strong><MapName></strong></p>
+</li>
+<li><ul>
+<li>This one is optional, but it allows you to customize launch arguments on a per-map basis. If you know the map name, you can just put it here.</li>
+<li>Pro Tip: if you have a benchmarking scene that you are using, you can set up tracing for only that map so that the tracing overhead doesn’t affect other profiling on regular maps. This is nice because you can keep that launch arg file in the same location without having to remove or rename it between play types.</li>
+</ul>
+</li>
+<li><p><strong>-trace</strong></p>
+</li>
+<li><ul>
+<li><p>Allows you to define the channels to tap into for the trace. Here are the combinations that I use when profiling:</p>
+</li>
+<li><ul>
+<li><p><strong>Most Detail&#x2F;Most Overhead:</strong> log,counters,cpu,frame,bookmark,file,loadtime, gpu,rhicommands,rendercommands,object</p>
+</li>
+<li><p><strong>Decent Detail&#x2F;Minimal Overhead:</strong> counters,cpu,frame,bookmark,gpu</p>
+</li>
+<li><p>Additional:</p>
+</li>
+<li><ul>
+<li><strong>Stats</strong> (experimental statstrace in 4.26 (Enable in code with #define EXPERIMENTAL_STATSTRACE_ENABLED 1 in Engine&#x2F;Source&#x2F;Runtime&#x2F;Core&#x2F;Public&#x2F;Stats&#x2F;StatsTrace.h)</li>
+<li><strong>LoadTime</strong> - includes ‘Loading - Main Thread’ and ‘Loading - Async Thread’ tracks</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>-statnamedevents</strong></p>
+</li>
+<li><ul>
+<li>When combined with -trace&#x3D;cpu option this will activate even more CPU timing events</li>
+</ul>
+</li>
+<li><p><strong>-tracehost</strong></p>
+</li>
+<li><ul>
+<li>IP address of the host machine with the Unreal Insights instance running that you want to connect to (127.0.0.1)</li>
+</ul>
+</li>
+<li><p><strong>-tracefile</strong></p>
+</li>
+<li><ul>
+<li><p>Can define a local path on the device that you want to dump the .trace file to as an alternative to live analysis. I keep mine in a static location and just overwrite it each time to always keep a most recent trace.</p>
+</li>
+<li><ul>
+<li>Just ‘adb pull &#x2F;sdcard&#x2F;UE4Game&#x2F;MostRecentTraceCapture.utrace’ to grab it. Can also just put it in project dir so you can keep most recent for each UE title you’re working on</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>其实tracefile不是必须, 实际举例如下</p>
+<blockquote>
+<p>..&#x2F;..&#x2F;..&#x2F;NextVR&#x2F;NextVR.uproject &#x2F;Game&#x2F;Maps&#x2F;Wharf&#x2F;Demo_Wharf -trace&#x3D;log,counters,cpu,frame,bookmark,file,loadtime,gpu,rhicommands,rendercommands,object -statnamedevents -cpuprofilertrace -tracehost&#x3D;127.0.0.1</p>
+</blockquote>
+<ul>
+<li>通过adb命令将文件上传至相应的项目目录, 如下图</li>
+</ul>
+<blockquote>
+<p>adb push .\ue4commandline.txt &#x2F;sdcard&#x2F;UE4Game&#x2F;<Project Name></p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223212045.png"></p>
+<ul>
+<li>运行如下命令, 让adb把相应的数据传到这个UnrealInsight监听的端口, 全小写, 否则会报找不到socket的错误</li>
+</ul>
+<blockquote>
+<p>adb reverse tcp:1980 tcp:1980</p>
+</blockquote>
+<ul>
+<li><p>运行Unreal Insights, 一般在下载到源码引擎目录Engine&#x2F;Binaries&#x2F;Win64&#x2F;下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223212135.png"></p>
+</li>
+<li><p>勾选Auto选项, 启动Quest 2上的应用, apk版本编译记得一定要使用development版本, 默认shipping版本不支持.</p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://developer.oculus.com/blog/get-started-with-unreal-insights-on-the-oculus-quest/">https://developer.oculus.com/blog/get-started-with-unreal-insights-on-the-oculus-quest/</a></p>
+<p><a target="_blank" rel="noopener" href="https://inu-games.com/2020/01/06/unreal-insights-on-oculus-quest/">https://inu-games.com/2020/01/06/unreal-insights-on-oculus-quest/</a></p>
+<p><a target="_blank" rel="noopener" href="https://communityforums.atmeta.com/t5/Unreal-VR-Development/Cannot-connect-Unreal-Insights-with-App-Lab-game-with-Quest-2/td-p/976968">https://communityforums.atmeta.com/t5/Unreal-VR-Development/Cannot-connect-Unreal-Insights-with-App-Lab-game-with-Quest-2/td-p/976968</a></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1524729208@qq.com </span>
