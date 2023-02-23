@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>categories | Pigknight的知识库</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="categories | Pigknight的知识库">
+  <title>[crash]中断点异常 STATUS_BREAKPOINT(0x80000003) | Pigknight的知识库</title>
+  <meta name="keywords" content=" UE , Crash ">
+  <meta name="description" content="[crash]中断点异常 STATUS_BREAKPOINT(0x80000003) | Pigknight的知识库">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tags">
@@ -326,19 +326,42 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+        <article id="post-中断点异常-STATUS-BREAKPOINT-0x80000003" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">categories</h1>
+        <h1 class="article-title">[crash]中断点异常 STATUS_BREAKPOINT(0x80000003)</h1>
     
     <div class="article-meta">
         
         
         
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="Client领域">Client领域</a> > 
+            
+            <a  data-rel="Client领域&lt;---&gt;引擎">引擎</a> > 
+            
+            <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal">Unreal</a> > 
+            
+            <a  data-rel="Client领域&lt;---&gt;引擎&lt;---&gt;Unreal&lt;---&gt;Crash">Crash</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color3">UE</a>
+            
+            <a class="color1">Crash</a>
+            
+        </span>
         
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2023-02-22 10:32:36'>2023-02-22 10:31</time>
+            Created At : <time class="date" title='Updated At: 2023-02-23 10:24:35'>2023-02-23 09:41</time>
         
     </div>
     <div class="article-meta">
@@ -360,7 +383,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BB%93%E8%AE%BA%E4%B8%8E%E6%80%BB%E7%BB%93"><span class="toc-text">1. 结论与总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%94%99%E8%AF%AF%E8%A1%A8%E7%8E%B0%E4%B8%8E%E5%8E%9F%E5%9B%A0"><span class="toc-text">2. 错误表现与原因</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -376,7 +399,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="1-结论与总结"><a href="#1-结论与总结" class="headerlink" title="1. 结论与总结"></a>1. 结论与总结</h3><ul>
+<li><p>消息系统中经常容易发生的循环中重入问题, 因此一定要加入额外的add与remove队列, 避免迭代器失效</p>
+</li>
+<li><p>当发现一种突发错误在默认中没有任何额外信息时, 可以查看下lldb的debuger</p>
+</li>
+</ul>
+<h3 id="2-错误表现与原因"><a href="#2-错误表现与原因" class="headerlink" title="2. 错误表现与原因"></a>2. 错误表现与原因</h3><p>游戏运行中, 会突然在如下代码行进入断点</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223095349.png"></p>
+<p>查看log与堆栈都是如下的0x80000003错误</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223101209.png"></p>
+<p>这个异常即中断指令异常，表示在系统未附加内核调试器时遇到断点或断言, 一般属于代码中发现错误主动中断</p>
+<ul>
+<li>硬代码中断请求，如：asm int 3</li>
+<li>System.Diagnostics.Debugger.Break（C 35）</li>
+<li>DebugBreak（）（WinAPI）</li>
+</ul>
+<p>花了一点时间排除问题, 偶然中发现在Rider中Debugger Output(LLDB)中有明确的提示如下, 迭代器失效了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223100411.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/lldb_status_breakpoint.png"></p>
+<p>结合代码, 即消息系统中, 一个消息触发, 生成一个Actor(也可以是删除), 这个Actor可能也去注册这个相同消息, 这样Listeners队列的迭代器即失效, 属于重入问题. </p>
+<p>也就两种方案, 加锁与额外内存(增加add与remove队列, 避免直接操作队列)</p>
+
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1524729208@qq.com </span>
     </div>

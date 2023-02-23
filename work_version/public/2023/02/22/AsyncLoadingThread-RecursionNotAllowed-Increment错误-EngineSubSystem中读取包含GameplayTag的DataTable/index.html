@@ -7,12 +7,12 @@
   <meta name="description" content="[Crash]AsyncLoadingThread.RecursionNotAllowed.Increment错误 | Pigknight的知识库">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://example.com/categories/index.html">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://example.com/tags/index.html">
 <meta property="og:site_name" content="Pigknight的知识库">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-02-22T02:31:18.000Z">
-<meta property="article:modified_time" content="2023-02-22T02:32:36.645Z">
+<meta property="article:published_time" content="2023-02-22T02:32:53.000Z">
+<meta property="article:modified_time" content="2023-02-22T02:33:12.045Z">
 <meta property="article:author" content="Pigknight">
 <meta name="twitter:card" content="summary">
 
@@ -146,7 +146,7 @@
     <li>
         <div class="all active" data-rel="All">All
             
-                <small>(1)</small>
+                <small>(2)</small>
             
         </div>
     </li>
@@ -158,7 +158,7 @@
                         <i class="fold iconfont icon-right"></i>
                         
                         Client领域
-                        <small>(1)</small>
+                        <small>(2)</small>
                         
                     </div>
                     
@@ -170,7 +170,7 @@
                                         
                                         引擎
                                         
-                                            <small>(1
+                                            <small>(2
                                                 )</small>
                                         
                                     </div>
@@ -184,7 +184,7 @@
                                                         
                                                         Unreal
                                                         
-                                                            <small>(1)</small>
+                                                            <small>(2)</small>
                                                         
                                                     </div>
                                                 </li>
@@ -231,7 +231,7 @@
         
     </div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="1">
+<input type="hidden" id="yelog_site_posts_number" value="2">
 
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
@@ -289,6 +289,15 @@
 
     
     <nav id="title-list-nav">
+        
+        
+        <a  class="All Client领域 引擎 Unreal Crash "
+           href="/2023/02/23/%E4%B8%AD%E6%96%AD%E7%82%B9%E5%BC%82%E5%B8%B8-STATUS-BREAKPOINT-0x80000003/"
+           data-tag="UE,Crash"
+           data-author="" >
+            <span class="post-title" title="[crash]中断点异常 STATUS_BREAKPOINT(0x80000003)">[crash]中断点异常 STATUS_BREAKPOINT(0x80000003)</span>
+            <span class="post-date" title="2023-02-23 09:41:02">2023/02/23</span>
+        </a>
         
         
         <a  class="All Client领域 引擎 Unreal Crash "
@@ -420,10 +429,6 @@
 </article>
 
 
-<p>
-    <a  class="dashang" onclick="dashangToggle()">💰</a>
-</p>
-
 
 
 
@@ -449,24 +454,6 @@
     </div>
 </div>
 
-<div class="hide_box" onclick="dashangToggle()"></div>
-<div class="shang_box">
-    <a class="shang_close"  onclick="dashangToggle()">×</a>
-    <div class="shang_tit">
-        <p>Help us with donation</p>
-    </div>
-    <div class="shang_payimg">
-        <div class="pay_img">
-            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
-            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
-        </div>
-    </div>
-    <div class="shang_payselect">
-        <span><label><input type="radio" name="pay" checked value="alipay">alipay</label></span><span><label><input type="radio" name="pay" value="weixin">weixin</label></span>
-    </div>
-</div>
-
-
 </body>
 <script src="/js/jquery.pjax.js?v=1.1.0" ></script>
 
@@ -480,14 +467,6 @@
         
 
         /*渲染打赏样式*/
-        
-        $("input[name=pay]").on("click", function () {
-            if($("input[name=pay]:checked").val()=="weixin"){
-                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
-            } else {
-                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
-            }
-        })
         
 
         /*高亮代码块行号*/
@@ -506,11 +485,6 @@
     }
 
     /*打赏页面隐藏与展示*/
-    
-    function dashangToggle() {
-        $(".shang_box").fadeToggle();
-        $(".hide_box").fadeToggle();
-    }
     
 
 </script>
