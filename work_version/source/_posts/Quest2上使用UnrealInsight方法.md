@@ -76,7 +76,7 @@ tags:
 
 - 通过adb命令将文件上传至相应的项目目录, 如下图
 
-> adb push .\ue4commandline.txt /sdcard/UE4Game/<Project Name>
+> adb push .\ue4commandline.txt /sdcard/UE4Game/**Project Name**
 
 ![](https://cdn.jsdelivr.net/gh/Piggyknight/pic_bed/20230223212045.png)
 
